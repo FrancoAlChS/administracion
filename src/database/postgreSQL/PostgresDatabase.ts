@@ -3,17 +3,23 @@ import { Database } from '../../app';
 import { Enviroment } from '../../constants';
 
 export class PostgresDatabase extends Database {
+	private static dataSource: DataSource | undefined = undefined;
+
 	public static conecction() {
-		return new DataSource({
-			type: 'postgres',
-			host: Enviroment.DB_HOST,
-			port: Enviroment.DB_PORT,
-			username: Enviroment.DB_USER,
-			password: Enviroment.DB_PASS,
-			database: Enviroment.DB_NAME,
-			entities: [`${__dirname}/entities/*.{ts, js}`],
-			migrations: [`${__dirname}/migrations/*.{ts,js}`],
-		});
+		if (PostgresDatabase.dataSource === undefined) {
+			PostgresDatabase.dataSource = new DataSource({
+				type: 'postgres',
+				host: Enviroment.DB_HOST,
+				port: Enviroment.DB_PORT,
+				username: Enviroment.DB_USER,
+				password: Enviroment.DB_PASS,
+				database: Enviroment.DB_NAME,
+				entities: [`${__dirname}/models/*.model.{ts,js}`],
+				migrations: [`${__dirname}/migrations/*.{ts,js}`],
+			});
+		}
+
+		return PostgresDatabase.dataSource;
 	}
 
 	public async connect(): Promise<void> {
