@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { AdministratorEntity } from './Administrator.entity';
 
 @Entity('drivers')
-export default class DriverEntity {
+export class DriverEntity {
 	@PrimaryColumn()
 	id: number;
 

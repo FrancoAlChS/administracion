@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import DriverEntity from './Driver.entity';
+import { DriverEntity } from './Driver.entity';
 
 @Entity('administrators')
 export class AdministratorEntity {
