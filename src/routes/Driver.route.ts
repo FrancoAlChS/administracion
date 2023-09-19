@@ -1,12 +1,13 @@
 import { Route } from '../app';
 import { DriverController } from '../controllers';
 
-export class DriverRoute extends Route<DriverController> {
+export class DriverRoute extends Route {
 	constructor() {
-		super(DriverController);
+		super();
 	}
 
 	protected routes(): void {
-		this.router.get('/driver', this.controller.listDrivers);
+		const driverController = new DriverController();
+		this.router.get('/driver', driverController.listDrivers);
 	}
 }

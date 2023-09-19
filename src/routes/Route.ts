@@ -1,5 +1,5 @@
-import { Controller, Route } from '../app';
+import { Route } from '../app';
 import { AdministratorRoute } from './Administrator.route';
 import { DriverRoute } from './Driver.route';
 
-export const Routes: Route<Controller>[] = [new AdministratorRoute(), new DriverRoute()];
+export const Routes: Route[] = [new AdministratorRoute(), new DriverRoute()];

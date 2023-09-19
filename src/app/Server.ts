@@ -1,15 +1,14 @@
 import express from 'express';
-import { Controller } from './Controller';
 import { Database } from './Database';
 import { Route } from './Route';
 
 export class Server {
 	private readonly server = express();
 	private readonly port: number;
-	private readonly routes: Route<Controller>[];
+	private readonly routes: Route[];
 	private readonly database: Database;
 
-	constructor(port: number, routes: Route<Controller>[], database: Database) {
+	constructor(port: number, routes: Route[], database: Database) {
 		this.routes = routes;
 		this.port = port;
 		this.database = database;

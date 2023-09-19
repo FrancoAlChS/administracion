@@ -1,12 +1,13 @@
 import { Route } from '../app';
-import { AdministratorController } from '../controllers';
+import { AdministratorController } from './../controllers';
 
-export class AdministratorRoute extends Route<AdministratorController> {
+export class AdministratorRoute extends Route {
 	constructor() {
-		super(AdministratorController);
+		super();
 	}
 
 	protected routes(): void {
-		this.router.get('/administrator', this.controller.listAdministrator);
+		const administratorController = new AdministratorController();
+		this.router.get('/administrator', administratorController.listAdministrator);
 	}
 }
