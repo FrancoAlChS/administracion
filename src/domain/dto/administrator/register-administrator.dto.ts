@@ -1,5 +1,5 @@
-import { CustomError } from '../../errors';
-import { DTO } from '../dto';
+import { AdministratorEntity } from '../../entities';
+import { AdministratorEmail, AdministratorKeyEmail, AdministratorName } from '../../value-objects';
 
 interface RegisterAdministrator {
 	name: string;
@@ -7,30 +7,12 @@ interface RegisterAdministrator {
 	keyEmail: string;
 }
 
-export class RegisterAdministratorDTO extends DTO<RegisterAdministrator> {
-	constructor(dataRequest: RegisterAdministrator) {
-		super(dataRequest);
-	}
+export class RegisterAdministratorDTO {
+	public static async create(dataRequest: RegisterAdministrator): Promise<AdministratorEntity> {
+		const name = new AdministratorName(dataRequest.name);
+		const email = new AdministratorEmail(dataRequest.email);
+		const keyEmail = new AdministratorKeyEmail(dataRequest.keyEmail);
 
-	protected validate() {
-		if (!this.dataRequest.name) {
-			throw CustomError.badRequest('El nombre es obligatorio');
-		}
-
-		if (!this.dataRequest.email) {
-			throw CustomError.badRequest('El correo es obligatorio');
-		}
-
-		if (!this.dataRequest.keyEmail) {
-			throw CustomError.badRequest('La llave del correo es obligatorio');
-		}
-	}
-
-	public getData() {
-		return {
-			name: this.dataRequest.name,
-			email: this.dataRequest.email,
-			keyEmail: this.dataRequest.keyEmail,
-		};
+		return new AdministratorEntity(0, name, email, keyEmail);
 	}
 }

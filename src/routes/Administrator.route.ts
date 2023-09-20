@@ -13,5 +13,6 @@ export class AdministratorRoute extends Route {
 
 		this.router.get('/administrator', administratorController.listAdministrator);
 		this.router.post('/administrator', administratorController.createAdministrator);
+		this.router.put('/administrator/:id', administratorController.updateAdministrator);
 	}
 }

@@ -1,15 +1,15 @@
 import { AdministratorEntity } from '../../entities';
 import { AdministratorRepository } from '../../repositories';
 
-interface RegisterAdministratorUseCase {
+interface UpdateAdministratorUseCase {
 	execute(administrator: AdministratorEntity): Promise<AdministratorEntity>;
 }
 
-export class RegisterAdministrator implements RegisterAdministratorUseCase {
-	constructor(private readonly adminsitratorRepository: AdministratorRepository) {}
+export class UpdateAdministrator implements UpdateAdministratorUseCase {
+	constructor(private readonly administratorRepository: AdministratorRepository) {}
 
 	public async execute(administrator: AdministratorEntity): Promise<AdministratorEntity> {
-		const registeredAdministrator = await this.adminsitratorRepository.registerAdministrator(administrator);
+		const registeredAdministrator = await this.administratorRepository.updateAdministrator(administrator);
 		return registeredAdministrator;
 	}
 }
