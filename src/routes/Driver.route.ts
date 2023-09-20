@@ -1,6 +1,9 @@
 import { Route } from '../app';
 import { DriverController } from '../controllers';
-import { PostgressDriverRepository } from '../database/postgreSQL/repositories';
+import {
+	PostgressAdministratorRepository,
+	PostgressDriverRepository,
+} from '../database/postgreSQL/repositories';
 
 export class DriverRoute extends Route {
 	constructor() {
@@ -9,9 +12,11 @@ export class DriverRoute extends Route {
 
 	protected routes(): void {
 		const driverRepository = new PostgressDriverRepository();
-		const driverController = new DriverController(driverRepository);
+		const administratorRepository = new PostgressAdministratorRepository();
+		const driverController = new DriverController(driverRepository, administratorRepository);
 
 		this.router.get('/driver', driverController.listDrivers);
 		this.router.post('/driver', driverController.registerDriver);
+		this.router.put('/driver/:id', driverController.updateDriver);
 	}
 }

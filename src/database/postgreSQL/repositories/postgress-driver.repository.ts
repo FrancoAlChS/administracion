@@ -29,12 +29,12 @@ export class PostgressDriverRepository extends DriverRepository {
 			.where('driver.id = :id', { id })
 			.getRawOne();
 
-		return {
-			id: registeredDriver.driver_id,
-			name: registeredDriver.driver_name,
-			email: registeredDriver.driver_email,
-			administratorId: registeredDriver.driver_administratorId,
-		};
+		return DriverMapper.toDomain(
+			registeredDriver.driver_id,
+			registeredDriver.driver_name,
+			registeredDriver.driver_email,
+			registeredDriver.driver_administratorId
+		);
 	}
 
 	public async registerDriver(driver: DriverEntity): Promise<DriverEntity> {
@@ -54,7 +54,7 @@ export class PostgressDriverRepository extends DriverRepository {
 
 	public async updateDriver(driver: DriverEntity): Promise<DriverEntity> {
 		const { id, email, administratorId, name } = driver;
-		await this.datasource.update(
+		const result = await this.datasource.update(
 			{ id },
 			{
 				name: name.getValue(),
@@ -62,7 +62,6 @@ export class PostgressDriverRepository extends DriverRepository {
 				administrator: { id: administratorId.getValue() },
 			}
 		);
-
 		return driver;
 	}
 }
