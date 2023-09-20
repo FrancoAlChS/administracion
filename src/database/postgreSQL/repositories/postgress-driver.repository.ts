@@ -1,4 +1,5 @@
 import { DriverEntity } from '../../../domain/entities';
+import { DriverMapper } from '../../../domain/mappers';
 import { DriverRepository } from '../../../domain/repositories';
 import { PostgresDatabase } from '../PostgresDatabase';
 import { PostgressDriverModel } from '../models';
@@ -12,12 +13,14 @@ export class PostgressDriverRepository extends DriverRepository {
 
 	public async findAllDrivers(): Promise<DriverEntity[]> {
 		const registeredDrivers = await this.datasource.createQueryBuilder('driver').getRawMany();
-		return registeredDrivers.map((driver) => ({
-			id: driver.driver_id,
-			name: driver.driver_name,
-			email: driver.driver_email,
-			administratorId: driver.driver_administratorId,
-		}));
+		return registeredDrivers.map((driver) =>
+			DriverMapper.toDomain(
+				driver.driver_id,
+				driver.driver_name,
+				driver.driver_email,
+				driver.driver_administratorId
+			)
+		);
 	}
 
 	public async findDriverById(id: number): Promise<DriverEntity | null> {
@@ -36,7 +39,11 @@ export class PostgressDriverRepository extends DriverRepository {
 
 	public async registerDriver(driver: DriverEntity): Promise<DriverEntity> {
 		const { email, administratorId, name } = driver;
-		const preparedDriver = this.datasource.create({ email, administrator: { id: administratorId }, name });
+		const preparedDriver = this.datasource.create({
+			email: email.getValue(),
+			administrator: { id: administratorId.getValue() },
+			name: name.getValue(),
+		});
 		const registeredDriver = await this.datasource.save(preparedDriver);
 
 		return {
@@ -50,9 +57,9 @@ export class PostgressDriverRepository extends DriverRepository {
 		await this.datasource.update(
 			{ id },
 			{
-				name,
-				email,
-				administrator: { id: administratorId },
+				name: name.getValue(),
+				email: email.getValue(),
+				administrator: { id: administratorId.getValue() },
 			}
 		);
 
