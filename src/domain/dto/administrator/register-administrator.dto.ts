@@ -1,3 +1,4 @@
+import { CustomError } from '../../errors';
 import { DTO } from '../dto';
 
 interface RegisterAdministrator {
@@ -13,15 +14,15 @@ export class RegisterAdministratorDTO extends DTO<RegisterAdministrator> {
 
 	protected validate() {
 		if (!this.dataRequest.name) {
-			throw new Error('El nombre es obligatorio');
+			throw CustomError.badRequest('El nombre es obligatorio');
 		}
 
 		if (!this.dataRequest.email) {
-			throw new Error('El correo es obligatorio');
+			throw CustomError.badRequest('El correo es obligatorio');
 		}
 
 		if (!this.dataRequest.keyEmail) {
-			throw new Error('La llave del correo es obligatorio');
+			throw CustomError.badRequest('La llave del correo es obligatorio');
 		}
 	}
 
