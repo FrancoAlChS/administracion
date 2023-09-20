@@ -1,7 +1,7 @@
+import cors from 'cors';
 import express from 'express';
 import { Database } from './Database';
 import { Route } from './Route';
-
 export class Server {
 	private readonly server = express();
 	private readonly port: number;
@@ -16,6 +16,7 @@ export class Server {
 
 	public async start() {
 		await this.database.connect();
+		this.configMiddleware();
 		this.createRoutes();
 		await this.startServer();
 	}
@@ -28,5 +29,11 @@ export class Server {
 		this.server.listen(this.port);
 		console.log(`Servidor encendido en el puerto ${this.port}`);
 		console.log(`http://localhost:${this.port}`);
+	}
+
+	private configMiddleware() {
+		this.server.use(cors());
+		this.server.use(express.urlencoded({ extended: false }));
+		this.server.use(express.json());
 	}
 }
