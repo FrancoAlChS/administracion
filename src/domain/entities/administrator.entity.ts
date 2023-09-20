@@ -1,8 +1,10 @@
+import { AdministratorEmail, AdministratorKeyEmail, AdministratorName } from '../value-objects';
+
 export class AdministratorEntity {
 	constructor(
 		public readonly id: number,
-		public name: string,
-		public email: string,
-		public keyEmail: string
+		public name: AdministratorName,
+		public email: AdministratorEmail,
+		public keyEmail: AdministratorKeyEmail
 	) {}
 }
