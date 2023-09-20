@@ -1,4 +1,5 @@
 import { AdministratorEntity } from '../../../domain/entities';
+import { AdministratorMapper } from '../../../domain/mappers';
 import { AdministratorRepository } from '../../../domain/repositories';
 import { PostgresDatabase } from '../PostgresDatabase';
 import { PostgressAdministratorModel } from '../models';
@@ -12,17 +13,21 @@ export class PostgressAdministratorRepository extends AdministratorRepository {
 
 	public async findAllAdministrators(): Promise<AdministratorEntity[]> {
 		const registeredAdministrators = await this.datasource.find();
-		return registeredAdministrators;
+		return registeredAdministrators.map((administrator) => AdministratorMapper.toDomain(administrator));
 	}
 
 	public async findAdministratorById(id: number): Promise<AdministratorEntity | null> {
-		const registeredAdministrator = await this.datasource.findOneBy({ id });
-		return registeredAdministrator;
+		const administrator = await this.datasource.findOneBy({ id });
+		return administrator && AdministratorMapper.toDomain(administrator);
 	}
 
 	public async registerAdministrator(administrator: AdministratorEntity): Promise<AdministratorEntity> {
 		const { name, email, keyEmail } = administrator;
-		const preparedAdministrator = this.datasource.create({ name, email, keyEmail });
+		const preparedAdministrator = this.datasource.create({
+			name: name.getValue(),
+			email: email.getValue(),
+			keyEmail: keyEmail.getValue(),
+		});
 		const registeredAdministrator = await this.datasource.save(preparedAdministrator);
 
 		return {
@@ -37,9 +42,9 @@ export class PostgressAdministratorRepository extends AdministratorRepository {
 		await this.datasource.update(
 			{ id: administrator.id },
 			{
-				name: name,
-				email: email,
-				keyEmail: keyEmail,
+				name: name.getValue(),
+				email: email.getValue(),
+				keyEmail: keyEmail.getValue(),
 			}
 		);
 
