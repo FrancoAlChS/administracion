@@ -12,5 +12,6 @@ export class DriverRoute extends Route {
 		const driverController = new DriverController(driverRepository);
 
 		this.router.get('/driver', driverController.listDrivers);
+		this.router.post('/driver', driverController.registerDriver);
 	}
 }
