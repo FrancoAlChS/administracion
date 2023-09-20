@@ -30,4 +30,19 @@ export class PostgressAdministratorRepository extends AdministratorRepository {
 			id: registeredAdministrator.id,
 		};
 	}
+
+	public async updateAdministrator(administrator: AdministratorEntity): Promise<AdministratorEntity> {
+		const { name, email, keyEmail } = administrator;
+
+		await this.datasource.update(
+			{ id: administrator.id },
+			{
+				name: name,
+				email: email,
+				keyEmail: keyEmail,
+			}
+		);
+
+		return administrator;
+	}
 }

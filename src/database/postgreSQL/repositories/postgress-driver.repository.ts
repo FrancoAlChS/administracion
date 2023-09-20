@@ -44,4 +44,18 @@ export class PostgressDriverRepository extends DriverRepository {
 			id: registeredDriver.id,
 		};
 	}
+
+	public async updateDriver(driver: DriverEntity): Promise<DriverEntity> {
+		const { id, email, administratorId, name } = driver;
+		await this.datasource.update(
+			{ id },
+			{
+				name,
+				email,
+				administrator: { id: administratorId },
+			}
+		);
+
+		return driver;
+	}
 }
