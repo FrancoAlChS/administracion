@@ -1,8 +1,10 @@
+import { DriverAdministratorId, DriverEmail, DriverName } from '../value-objects';
+
 export class DriverEntity {
 	constructor(
 		public readonly id: number,
-		public name: string,
-		public email: string,
-		public administratorId: number
+		public name: DriverName,
+		public email: DriverEmail,
+		public administratorId: DriverAdministratorId
 	) {}
 }
