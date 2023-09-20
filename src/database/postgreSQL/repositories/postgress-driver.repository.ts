@@ -35,7 +35,8 @@ export class PostgressDriverRepository extends DriverRepository {
 	}
 
 	public async registerDriver(driver: DriverEntity): Promise<DriverEntity> {
-		const preparedDriver = this.datasource.create(driver);
+		const { email, administratorId, name } = driver;
+		const preparedDriver = this.datasource.create({ email, administrator: { id: administratorId }, name });
 		const registeredDriver = await this.datasource.save(preparedDriver);
 
 		return {

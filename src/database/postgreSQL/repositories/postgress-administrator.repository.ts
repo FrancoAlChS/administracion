@@ -21,7 +21,8 @@ export class PostgressAdministratorRepository extends AdministratorRepository {
 	}
 
 	public async registerAdministrator(administrator: AdministratorEntity): Promise<AdministratorEntity> {
-		const preparedAdministrator = this.datasource.create(administrator);
+		const { name, email, keyEmail } = administrator;
+		const preparedAdministrator = this.datasource.create({ name, email, keyEmail });
 		const registeredAdministrator = await this.datasource.save(preparedAdministrator);
 
 		return {
