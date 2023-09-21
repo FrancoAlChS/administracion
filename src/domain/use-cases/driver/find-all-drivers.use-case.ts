@@ -8,8 +8,8 @@ interface FindAllDriversUseCase {
 export class FindAllDrivers implements FindAllDriversUseCase {
 	constructor(private readonly driverRepository: DriverRepository) {}
 
-	execute(): Promise<DriverEntity[]> {
-		const listDrivers = this.driverRepository.findAllDrivers();
+	public async execute(): Promise<DriverEntity[]> {
+		const listDrivers = await this.driverRepository.findAllDrivers();
 		return listDrivers;
 	}
 }
