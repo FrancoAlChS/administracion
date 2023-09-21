@@ -14,12 +14,12 @@ export class PostgressDriverRepository extends DriverRepository {
 	public async findAllDrivers(): Promise<DriverEntity[]> {
 		const registeredDrivers = await this.datasource.createQueryBuilder('driver').getRawMany();
 		return registeredDrivers.map((driver) =>
-			DriverMapper.toDomain(
-				driver.driver_id,
-				driver.driver_name,
-				driver.driver_email,
-				driver.driver_administratorId
-			)
+			DriverMapper.toDomain({
+				id: driver.driver_id,
+				name: driver.driver_name,
+				email: driver.driver_email,
+				administratorId: driver.driver_administratorId,
+			})
 		);
 	}
 
@@ -29,39 +29,26 @@ export class PostgressDriverRepository extends DriverRepository {
 			.where('driver.id = :id', { id })
 			.getRawOne();
 
-		return DriverMapper.toDomain(
-			registeredDriver.driver_id,
-			registeredDriver.driver_name,
-			registeredDriver.driver_email,
-			registeredDriver.driver_administratorId
-		);
+		return DriverMapper.toDomain({
+			id: registeredDriver.driver_id,
+			name: registeredDriver.driver_name,
+			email: registeredDriver.driver_email,
+			administratorId: registeredDriver.driver_administratorId,
+		});
 	}
 
 	public async registerDriver(driver: DriverEntity): Promise<DriverEntity> {
-		const { email, administratorId, name } = driver;
-		const preparedDriver = this.datasource.create({
-			email: email.getValue(),
-			administrator: { id: administratorId.getValue() },
-			name: name.getValue(),
-		});
+		const { email, administratorId, name } = driver.getValues();
+		const preparedDriver = this.datasource.create({ email, name, administrator: { id: administratorId } });
 		const registeredDriver = await this.datasource.save(preparedDriver);
 
-		return {
-			...driver,
-			id: registeredDriver.id,
-		};
+		return DriverMapper.toDomain({ id: registeredDriver.id, name, administratorId, email });
 	}
 
 	public async updateDriver(driver: DriverEntity): Promise<DriverEntity> {
-		const { id, email, administratorId, name } = driver;
-		const result = await this.datasource.update(
-			{ id },
-			{
-				name: name.getValue(),
-				email: email.getValue(),
-				administrator: { id: administratorId.getValue() },
-			}
-		);
+		const { id, email, administratorId, name } = driver.getValues();
+		await this.datasource.update({ id }, { name, email, administrator: { id: administratorId } });
+
 		return driver;
 	}
 }
