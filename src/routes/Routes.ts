@@ -1,5 +1,5 @@
 import { Route } from '../app';
-import { AdministratorRoute } from './Administrator.route';
-import { DriverRoute } from './Driver.route';
+import { AdministratorRoute } from './administrator.route';
+import { DriverRoute } from './driver.route';
 
 export const Routes: Route[] = [new AdministratorRoute(), new DriverRoute()];

@@ -1,3 +1,3 @@
-export * from './Administrator.route';
-export * from './Driver.route';
-export * from './Route';
+export * from './Routes';
+export * from './administrator.route';
+export * from './driver.route';

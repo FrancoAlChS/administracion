@@ -1,2 +1,2 @@
-export * from './Administrator.controller';
-export * from './Driver.controller';
+export * from './administrator.controller';
+export * from './driver.controller';

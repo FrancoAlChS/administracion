@@ -1,6 +1,6 @@
 import { Route } from '../app';
+import { AdministratorController } from '../controllers';
 import { PostgressAdministratorRepository } from '../database/postgreSQL/repositories';
-import { AdministratorController } from './../controllers';
 
 export class AdministratorRoute extends Route {
 	constructor() {
