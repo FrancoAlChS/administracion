@@ -10,6 +10,6 @@ export class ReportDriverName extends ValueObject<string> {
 	}
 
 	public getValue(): string {
-		return this.value;
+		return this.value.trim();
 	}
 }
