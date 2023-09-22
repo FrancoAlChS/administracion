@@ -1,6 +1,5 @@
 import {
 	ReportAgent,
-	ReportCampus,
 	ReportCategory,
 	ReportDate,
 	ReportDeliveryData,
@@ -13,7 +12,6 @@ import { Entity } from './Entity';
 
 interface ReportProps {
 	date: string;
-	campus: string;
 	schedule: string;
 	category: string;
 	driverName: string;
@@ -33,7 +31,6 @@ interface ReportProps {
 export class ReportEntity extends Entity<ReportProps> {
 	constructor(
 		public date: ReportDate,
-		public campus: ReportCampus,
 		public category: ReportCategory,
 		public schedule: ReportSchedule,
 		public driverName: ReportDriverName,
@@ -48,7 +45,6 @@ export class ReportEntity extends Entity<ReportProps> {
 	public getValues(): ReportProps {
 		return {
 			date: this.date.getValue(),
-			campus: this.campus.getValue(),
 			schedule: this.schedule.getValue(),
 			category: this.category.getValue(),
 			driverName: this.driverName.getValue(),

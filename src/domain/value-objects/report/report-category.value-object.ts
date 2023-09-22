@@ -11,7 +11,7 @@ export class ReportCategory extends ValueObject<Category> {
 	protected validate(): void {
 		this.isEmpty('La categoria no puede estar vacia');
 
-		if (this.value !== 'ingreso' && this.value !== 'salida') {
+		if (this.value.toLowerCase() !== 'ingreso' && this.value.toLowerCase() !== 'salida') {
 			throw CustomError.badRequest('La categoria solo puede ser "ingreso" o "salida"');
 		}
 	}

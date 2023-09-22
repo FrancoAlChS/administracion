@@ -5,7 +5,6 @@ export * from './driver/driver-administrator-id.value-object';
 export * from './driver/driver-email.value-object';
 export * from './driver/driver-name.value-object';
 export * from './report/report-agent.value-object';
-export * from './report/report-campus.value-object';
 export * from './report/report-category.value-object';
 export * from './report/report-date.value-object';
 export * from './report/report-delivery-data.value.object';
