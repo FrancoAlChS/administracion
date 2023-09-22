@@ -5,4 +5,7 @@ export abstract class AdministratorRepository {
 	public abstract findAdministratorById(id: number): Promise<AdministratorEntity | null>;
 	public abstract registerAdministrator(administrator: AdministratorEntity): Promise<AdministratorEntity>;
 	public abstract updateAdministrator(administrator: AdministratorEntity): Promise<AdministratorEntity>;
+	public abstract findAdministratorAndHisDrivers(
+		administratorId: number
+	): Promise<AdministratorEntity | null>;
 }
