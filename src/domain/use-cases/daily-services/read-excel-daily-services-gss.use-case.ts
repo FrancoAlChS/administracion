@@ -44,6 +44,7 @@ export class ReadExcelDailyServicesGSS {
 	public async execute(excelName: string, listDrivers: DriverEntity[]): Promise<ReturnUseCase[]> {
 		const dataExcel = await this.readExcel(`src/files/excel/GSS/${excelName}.xlsx`);
 
+		//TODO: BUSCAR UNA MEJOR MANERA DE PORDER SEPARAR Y CREAR LAS ENTIDADES DE REPORTE
 		return listDrivers
 			.map((driver) => {
 				//- FILTRAR REPORTE POR LA LISTA DE CONDUCTORES ASIGNADOS, Y CREAMOS LAS ENTIDADES DE REPORTE
@@ -59,9 +60,10 @@ export class ReadExcelDailyServicesGSS {
 			.filter((data) => data.reports.length > 0);
 	}
 
-	private createReportEntity(report: DataExcelGSS, index: number) {
+	private createReportEntity = (report: DataExcelGSS, index: number) => {
 		try {
-			const date = new ReportDate(report.FECHA.trim());
+			const dateObject = this.formatDate(report.FECHA.trim());
+			const date = new ReportDate(dateObject);
 			const category = new ReportCategory(report['INGRESO-SALIDA']);
 			const schedule = new ReportSchedule(report.HORA);
 			const driverName = new ReportDriverName(report.CONDUCTOR.trim());
@@ -87,5 +89,14 @@ export class ReadExcelDailyServicesGSS {
 			}
 			throw error;
 		}
+	};
+
+	private formatDate(reportDate: string) {
+		const date = new Date(reportDate);
+		const day = `0${date.getDay()}`.slice(-2);
+		const month = `0${date.getMonth()}`.slice(-2);
+		const year = `0${date.getFullYear()}`.slice(-2);
+
+		return `${day}.${month}.${year}`;
 	}
 }

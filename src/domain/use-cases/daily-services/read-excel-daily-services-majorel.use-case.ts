@@ -40,6 +40,7 @@ export class ReadExcelDailyServicesMajorel {
 	public async execute(excelName: string, listDrivers: DriverEntity[]): Promise<ReturnUseCase[]> {
 		const dataExcel = await this.readExcel(`src/files/excel/MAJOREL/${excelName}.xlsx`);
 
+		//TODO: BUSCAR UNA MEJOR MANERA DE PORDER SEPARAR Y CREAR LAS ENTIDADES DE REPORTE
 		return listDrivers
 			.map((driver) => {
 				//- FILTRAR REPORTE POR LA LISTA DE CONDUCTORES ASIGNADOS, Y CREAMOS LAS ENTIDADES DE REPORTE
@@ -55,9 +56,10 @@ export class ReadExcelDailyServicesMajorel {
 			.filter((data) => data.reports.length > 0);
 	}
 
-	private createReportEntity(report: DataExcelMajorel, index: number) {
+	private createReportEntity = (report: DataExcelMajorel, index: number) => {
 		try {
-			const date = new ReportDate(report.FECHA.trim());
+			const dateObject = this.formatDate(report.FECHA.trim());
+			const date = new ReportDate(dateObject);
 			const category = new ReportCategory(report.SERVICIO);
 			const schedule = new ReportSchedule(report.HORARIO);
 			const driverName = new ReportDriverName(report.CONDUCTOR.trim());
@@ -83,5 +85,14 @@ export class ReadExcelDailyServicesMajorel {
 			}
 			throw error;
 		}
+	};
+
+	private formatDate(reportDate: string) {
+		const date = new Date(reportDate);
+		const day = `0${date.getDay()}`.slice(-2);
+		const month = `0${date.getMonth()}`.slice(-2);
+		const year = `0${date.getFullYear()}`.slice(-2);
+
+		return `${day}.${month}.${year}`;
 	}
 }
