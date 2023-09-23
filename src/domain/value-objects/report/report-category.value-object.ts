@@ -5,7 +5,7 @@ type Category = 'ingreso' | 'salida';
 
 export class ReportCategory extends ValueObject<Category> {
 	constructor(value: Category) {
-		super(value);
+		super(value.trim() as Category);
 	}
 
 	protected validate(): void {
