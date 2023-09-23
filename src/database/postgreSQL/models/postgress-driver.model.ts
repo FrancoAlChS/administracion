@@ -9,13 +9,11 @@ export class PostgressDriverModel {
 	@Column({
 		type: 'varchar',
 		length: 50,
-		unique: true,
 	})
 	name: string;
 
 	@Column({
 		type: 'varchar',
-		unique: true,
 	})
 	email: string;
 
