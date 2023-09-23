@@ -1,5 +1,6 @@
 import { DriverEntity } from '../../entities';
 import { ReportEntity } from '../../entities/report.entity';
+import { CustomError } from '../../errors';
 import {
 	ReportAgent,
 	ReportCategory,
@@ -10,13 +11,6 @@ import {
 	ReportSchedule,
 	ReportVoucher,
 } from '../../value-objects';
-
-interface ReadExcelDailyServicesGSSUseCase {
-	execute(
-		excelName: string,
-		listDrivers: DriverEntity[]
-	): Promise<{ email: string; reports: ReportEntity[] }[]>;
-}
 
 type ReadExcelFunction<T> = (directory: string) => Promise<T[]>;
 
@@ -39,47 +33,59 @@ interface DataExcelGSS {
 	'TARDANZA-ADELANTO': string;
 }
 
-export class ReadExcelDailyServicesGSS implements ReadExcelDailyServicesGSSUseCase {
+interface ReturnUseCase {
+	email: string;
+	reports: ReportEntity[];
+}
+
+export class ReadExcelDailyServicesGSS {
 	constructor(private readonly readExcel: ReadExcelFunction<DataExcelGSS>) {}
 
-	public async execute(
-		excelName: string,
-		listDrivers: DriverEntity[]
-	): Promise<{ email: string; reports: ReportEntity[] }[]> {
+	public async execute(excelName: string, listDrivers: DriverEntity[]): Promise<ReturnUseCase[]> {
 		const dataExcel = await this.readExcel(`src/files/excel/GSS/${excelName}.xlsx`);
 
 		return listDrivers
 			.map((driver) => {
-				const reports = dataExcel
+				//- FILTRAR REPORTE POR LA LISTA DE CONDUCTORES ASIGNADOS, Y CREAMOS LAS ENTIDADES DE REPORTE
+				const listReportsEntity = dataExcel
 					.filter((report) => report.CONDUCTOR.trim().toUpperCase() === driver.name.getValue().toUpperCase())
 					.map(this.createReportEntity);
 
 				return {
 					email: driver.email.getValue(),
-					reports: reports,
+					reports: listReportsEntity,
 				};
 			})
 			.filter((data) => data.reports.length > 0);
 	}
 
-	private createReportEntity(report: DataExcelGSS) {
-		const date = new ReportDate(report.FECHA);
-		const category = new ReportCategory(report['INGRESO-SALIDA']);
-		const schedule = new ReportSchedule(report.HORA);
-		const driverName = new ReportDriverName(report.CONDUCTOR);
-		const agent = new ReportAgent({ name: report['APELLIDOS Y NOMBRES'], DNI: report.DNI });
-		const location = new ReportLocation({
-			address: report.DIRECCIÓN,
-			district: report.DISTRITO,
-			reference: report.REFERENCIAS,
-		});
-		const voucher = new ReportVoucher(report['N° VALE']);
-		const deliveryData = new ReportDeliveryData({
-			endTime: report['HR LLGD Y SALIDA'],
-			minutes: report['TARDANZA-ADELANTO'],
-			typology: report.TIPOLOGIA,
-		});
+	private createReportEntity(report: DataExcelGSS, index: number) {
+		try {
+			const date = new ReportDate(report.FECHA.trim());
+			const category = new ReportCategory(report['INGRESO-SALIDA']);
+			const schedule = new ReportSchedule(report.HORA);
+			const driverName = new ReportDriverName(report.CONDUCTOR.trim());
+			const agent = new ReportAgent({ name: report['APELLIDOS Y NOMBRES'].trim(), DNI: report.DNI });
+			const location = new ReportLocation({
+				address: report.DIRECCIÓN,
+				district: report.DISTRITO,
+				reference: report.REFERENCIAS,
+			});
+			const voucher = new ReportVoucher(report['N° VALE']);
+			const deliveryData = new ReportDeliveryData({
+				endTime: report['HR LLGD Y SALIDA'],
+				minutes: report['TARDANZA-ADELANTO'],
+				typology: report.TIPOLOGIA,
+			});
 
-		return new ReportEntity(date, category, schedule, driverName, agent, location, voucher, deliveryData);
+			return new ReportEntity(date, category, schedule, driverName, agent, location, voucher, deliveryData);
+		} catch (error) {
+			if (error instanceof CustomError) {
+				throw CustomError.badRequest(
+					`${error.message} ||| -Fila: ${index + 1} -Conductor: ${report.CONDUCTOR}`
+				);
+			}
+			throw error;
+		}
 	}
 }
