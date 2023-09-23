@@ -4,6 +4,7 @@ export * from './administrator/register-administrator.use-case';
 export * from './administrator/update-administrator.use-case';
 export * from './daily-services/create-daily-services-message.use-case';
 export * from './daily-services/read-excel-daily-services-gss.use-case';
+export * from './daily-services/read-excel-daily-services-majorel.use-case';
 export * from './daily-services/send-daily-services.use-case';
 export * from './driver/find-all-drivers.use-case';
 export * from './driver/register-driver.user-case';

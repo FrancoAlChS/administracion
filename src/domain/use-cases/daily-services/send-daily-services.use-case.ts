@@ -3,6 +3,7 @@ import { CustomError } from '../../errors';
 import { AdministratorRepository } from '../../repositories';
 import { CreateDailyServicesMessage } from './create-daily-services-message.use-case';
 import { ReadExcelDailyServicesGSS } from './read-excel-daily-services-gss.use-case';
+import { ReadExcelDailyServicesMajorel } from './read-excel-daily-services-majorel.use-case';
 
 type ReadExcelFunction = (directory: string) => Promise<any>;
 type SendEmailFunction = (
@@ -26,10 +27,12 @@ export class SendDailyServices {
 		const { day, excelFileName, reportType } = options;
 		const { email, keyEmail, name } = administrator.getValues();
 
+		const listDrivers = administrator.getDrivers();
+
 		//- SEPARAR LOS REPORTES EN LAS LISTAS DE LOS CONDUCTORES DEL ADMINISTRADOR, SEGÚN EL TIPO DE REPORTE
 		const reportsByDriver = await (options.reportType === 'GSS'
-			? new ReadExcelDailyServicesGSS(this.readExcel).execute(excelFileName, administrator.getDrivers())
-			: []);
+			? new ReadExcelDailyServicesGSS(this.readExcel).execute(excelFileName, listDrivers)
+			: new ReadExcelDailyServicesMajorel(this.readExcel).execute(excelFileName, listDrivers));
 
 		//- CREAR LA LISTA DE TODOS LOS CONTENIDOS DE LOS CORREOS
 		const emailContentList = reportsByDriver.map((item) => {

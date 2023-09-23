@@ -25,4 +25,19 @@ export class dailyServicesController extends Controller {
 			this.Error(res, error);
 		}
 	};
+
+	public sendDailyMajorelServices = async (req: Request, res: Response) => {
+		try {
+			const administratorId = Number(req.params.administratorId);
+			const sendDailyServicesDTO = SendDailyServicesDTO.create(req.body, ReportTypes.MAJOREL);
+
+			await new SendDailyServices(this.administratorRepository, Excel.readExcel, Email.sendEmail).execute(
+				administratorId,
+				sendDailyServicesDTO
+			);
+			this.Ok(res);
+		} catch (error) {
+			this.Error(res, error);
+		}
+	};
 }
