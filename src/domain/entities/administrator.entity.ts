@@ -39,4 +39,15 @@ export class AdministratorEntity extends Entity<AdministratorProps> {
 			keyEmail: this.keyEmail.getValue(),
 		};
 	}
+
+	public getName(): string {
+		return this.name.getValue();
+	}
+
+	public getEmail(): string {
+		return this.email.getValue();
+	}
+	public getKeyEmail(): string {
+		return this.keyEmail.getValue();
+	}
 }

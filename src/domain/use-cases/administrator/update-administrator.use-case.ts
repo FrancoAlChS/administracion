@@ -14,24 +14,21 @@ export class UpdateAdministrator {
 			throw CustomError.badRequest('No existe el administrador');
 		}
 
-		if (updateAdministratorDTO.name && updateAdministratorDTO.name !== administrator.name.getValue()) {
+		if (updateAdministratorDTO.name && updateAdministratorDTO.name !== administrator.getName()) {
 			const name = new AdministratorName(updateAdministratorDTO.name);
 			await this.uniqueName(name);
 			administrator.name = name;
 			isModified = true;
 		}
 
-		if (updateAdministratorDTO.email && updateAdministratorDTO.email !== administrator.email.getValue()) {
+		if (updateAdministratorDTO.email && updateAdministratorDTO.email !== administrator.getEmail()) {
 			const email = new AdministratorEmail(updateAdministratorDTO.email);
 			await this.uniqueEmail(email);
 			administrator.email = email;
 			isModified = true;
 		}
 
-		if (
-			updateAdministratorDTO.keyEmail &&
-			updateAdministratorDTO.keyEmail !== administrator.keyEmail.getValue()
-		) {
+		if (updateAdministratorDTO.keyEmail && updateAdministratorDTO.keyEmail !== administrator.getKeyEmail()) {
 			const keyEmail = new AdministratorKeyEmail(updateAdministratorDTO.keyEmail);
 			await this.uniqueKeyEmail(keyEmail);
 			administrator.keyEmail = keyEmail;
