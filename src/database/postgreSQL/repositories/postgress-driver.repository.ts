@@ -37,6 +37,23 @@ export class PostgressDriverRepository extends DriverRepository {
 		});
 	}
 
+	public async findDriverByName(name: string): Promise<DriverEntity | null> {
+		const registeredDriver = await this.datasource
+			.createQueryBuilder('driver')
+			.where('driver.name = :name', { name })
+			.getRawOne();
+
+		return (
+			registeredDriver &&
+			DriverMapper.toDomain({
+				id: registeredDriver.driver_id,
+				name: registeredDriver.driver_name,
+				email: registeredDriver.driver_email,
+				administratorId: registeredDriver.driver_administratorId,
+			})
+		);
+	}
+
 	public async registerDriver(driver: DriverEntity): Promise<DriverEntity> {
 		const { email, administratorId, name } = driver.getValues();
 		const preparedDriver = this.datasource.create({ email, name, administrator: { id: administratorId } });
