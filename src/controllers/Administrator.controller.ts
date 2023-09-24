@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { Controller } from '../app/Controller';
-import { UpdateAdministratorDTO } from '../domain/dto';
 import { AdministratorRepository } from '../domain/repositories';
 import { FindAllAdministrators, RegisterAdministrator } from '../domain/use-cases';
 import { UpdateAdministrator } from '../domain/use-cases/administrator/update-administrator.use-case';
@@ -31,14 +30,11 @@ export class AdministratorController extends Controller {
 
 	public updateAdministrator = async (req: Request, res: Response) => {
 		try {
-			const id = Number(req.params.id);
-			const administratorEntity = await UpdateAdministratorDTO.execute(
-				id,
-				req.body,
-				this.administratorRepository
-			);
+			const administratorId = Number(req.params.id);
+
 			const administrator = await new UpdateAdministrator(this.administratorRepository).execute(
-				administratorEntity
+				administratorId,
+				req.body
 			);
 			this.Ok(res, administrator);
 		} catch (error) {
