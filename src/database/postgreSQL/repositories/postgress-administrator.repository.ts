@@ -39,6 +39,21 @@ export class PostgressAdministratorRepository extends AdministratorRepository {
 		return AdministratorMapper.toDomainAndDrivers(administratorData, administrator.drivers);
 	}
 
+	public async findAdministratorByName(name: string): Promise<AdministratorEntity | null> {
+		const administrator = await this.datasource.findOneBy({ name });
+		return administrator && AdministratorMapper.toDomain(administrator);
+	}
+
+	public async findAdministratorByEmail(email: string): Promise<AdministratorEntity | null> {
+		const administrator = await this.datasource.findOneBy({ email });
+		return administrator && AdministratorMapper.toDomain(administrator);
+	}
+
+	public async findAdministratorByKeEmail(keyEmail: string): Promise<AdministratorEntity | null> {
+		const administrator = await this.datasource.findOneBy({ keyEmail });
+		return administrator && AdministratorMapper.toDomain(administrator);
+	}
+
 	public async registerAdministrator(administrator: AdministratorEntity): Promise<AdministratorEntity> {
 		const { name, email, keyEmail } = administrator.getValues();
 

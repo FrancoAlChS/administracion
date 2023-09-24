@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Controller } from '../app/Controller';
-import { RegisterAdministratorDTO, UpdateAdministratorDTO } from '../domain/dto';
+import { UpdateAdministratorDTO } from '../domain/dto';
 import { AdministratorRepository } from '../domain/repositories';
 import { FindAllAdministrators, RegisterAdministrator } from '../domain/use-cases';
 import { UpdateAdministrator } from '../domain/use-cases/administrator/update-administrator.use-case';
@@ -21,10 +21,7 @@ export class AdministratorController extends Controller {
 
 	public createAdministrator = async (req: Request, res: Response) => {
 		try {
-			const administratorEntity = await RegisterAdministratorDTO.create(req.body);
-			const administrator = await new RegisterAdministrator(this.administratorRepository).execute(
-				administratorEntity
-			);
+			const administrator = await new RegisterAdministrator(this.administratorRepository).execute(req.body);
 
 			this.Ok(res, administrator);
 		} catch (error) {
