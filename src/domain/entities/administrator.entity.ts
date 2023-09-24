@@ -10,7 +10,7 @@ interface AdministratorProps {
 }
 
 export class AdministratorEntity extends Entity<AdministratorProps> {
-	private drivers: DriverEntity[] | null = [];
+	private drivers: DriverEntity[] | undefined = undefined;
 
 	constructor(
 		public readonly id: number,
@@ -26,7 +26,7 @@ export class AdministratorEntity extends Entity<AdministratorProps> {
 	}
 
 	public getDrivers(): DriverEntity[] {
-		if (this.drivers === null) {
+		if (this.drivers === undefined) {
 			throw CustomError.internalServer('No se asignaron los conductores a la entidad');
 		}
 		return this.drivers;
