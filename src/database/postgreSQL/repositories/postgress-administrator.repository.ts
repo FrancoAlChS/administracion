@@ -25,6 +25,7 @@ export class PostgressAdministratorRepository extends AdministratorRepository {
 		const administrator = await this.datasource
 			.createQueryBuilder('administrator')
 			.innerJoinAndSelect('administrator.drivers', 'drivers')
+			.where('administrator.id = :administratorId', { administratorId })
 			.getOne();
 
 		if (!administrator) return null;
