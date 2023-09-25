@@ -9,3 +9,4 @@ export * from './daily-services/send-daily-services.use-case';
 export * from './driver/find-all-drivers.use-case';
 export * from './driver/register-driver.user-case';
 export * from './driver/update-driver.use-case';
+export * from './message-email/send-emails-all-drivers.use-case';

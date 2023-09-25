@@ -1,15 +1,14 @@
 import { SendDailyServicesDTO } from '../../dto';
+import { EmailEntity } from '../../entities';
 import { CustomError } from '../../errors';
 import { AdministratorRepository } from '../../repositories';
+import { EmailFrom, EmailFromEmail, EmailMessage, EmailSubject, EmailToEmail } from '../../value-objects';
 import { CreateDailyServicesMessage } from './create-daily-services-message.use-case';
 import { ReadExcelDailyServicesGSS } from './read-excel-daily-services-gss.use-case';
 import { ReadExcelDailyServicesMajorel } from './read-excel-daily-services-majorel.use-case';
 
 type ReadExcelFunction = (directory: string) => Promise<any>;
-type SendEmailFunction = (
-	emailData: { subject: string; message: string; toEmail: string; from: string },
-	senderData: { email: string; key: string }
-) => Promise<any>;
+type SendEmailFunction = (email: EmailEntity) => Promise<any>;
 
 export class SendDailyServices {
 	constructor(
@@ -34,21 +33,26 @@ export class SendDailyServices {
 			? new ReadExcelDailyServicesGSS(this.readExcel).execute(excelFileName, listDrivers)
 			: new ReadExcelDailyServicesMajorel(this.readExcel).execute(excelFileName, listDrivers));
 
-		//- CREAR LA LISTA DE TODOS LOS CONTENIDOS DE LOS CORREOS
-		const emailContentList = reportsByDriver.map((item) => {
+		//- Creando las entidades de correo (EmailEntity)
+		const fromEmail = new EmailFromEmail({
+			email: administrator.getEmail(),
+			key: administrator.getKeyEmail(),
+		});
+		const from = new EmailFrom(`${administrator.getName()} <${administrator.getEmail()}>`);
+
+		const listEmails = reportsByDriver.map((item) => {
 			const message = new CreateDailyServicesMessage().execute(item.reports, options);
-			return {
-				subject: `SERVICIOS DIARIOS DEL ${day} DE ${reportType}`,
-				toEmail: item.email,
-				message,
-			};
+
+			return new EmailEntity(
+				new EmailMessage(message),
+				new EmailSubject(`SERVICIOS DIARIOS DEL ${day} DE ${reportType}`),
+				new EmailToEmail(item.email),
+				fromEmail,
+				from
+			);
 		});
 
 		//- ESPERAR RESPUESTA DEL ENVIO DE CORREOS
-		await Promise.all(
-			emailContentList.map((emailContent) =>
-				this.sendEmail({ ...emailContent, from: `${name} <${email}>` }, { email: email, key: keyEmail })
-			)
-		);
+		await Promise.all(listEmails.map((email) => this.sendEmail(email)));
 	}
 }

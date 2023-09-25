@@ -1,5 +1,6 @@
 import { Route } from '../app';
 import { MessageEmailController } from '../controllers';
+import { PostgressAdministratorRepository } from '../database/postgreSQL/repositories';
 
 export class MessageEmailRoute extends Route {
 	constructor() {
@@ -7,7 +8,9 @@ export class MessageEmailRoute extends Route {
 	}
 
 	protected routes(): void {
-		const messageEmailController = new MessageEmailController();
-		this.router.post('/message/allDrivers', messageEmailController.sendMessageAllDrivers);
+		const administratorRepository = new PostgressAdministratorRepository();
+		const messageEmailController = new MessageEmailController(administratorRepository);
+
+		this.router.post('/message/allDrivers/:administratorId', messageEmailController.sendMessageAllDrivers);
 	}
 }

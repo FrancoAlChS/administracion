@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { Enviroment } from '../constants';
+import { EmailEntity } from '../domain/entities';
 
 export class Email {
 	private static transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo> | undefined = undefined;
@@ -21,21 +22,13 @@ export class Email {
 		return Email.transporter;
 	}
 
-	public static async sendEmail(
-		emailData: {
-			subject: string;
-			message: string;
-			toEmail: string;
-			from: string;
-		},
-		senderData: { email: string; key: string }
-	) {
-		const transporter = Email.config(senderData.email, senderData.key);
+	public static async sendEmail(email: EmailEntity) {
+		const transporter = Email.config(email.getFromEmail(), email.getKeyEmail());
 		return transporter.sendMail({
-			from: emailData.from,
-			to: emailData.toEmail,
-			subject: emailData.subject,
-			html: emailData.message,
+			from: email.getFrom(),
+			to: email.getToEmail(),
+			subject: email.getSubject(),
+			html: email.getMessage(),
 		});
 	}
 }
